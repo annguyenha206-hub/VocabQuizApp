@@ -554,20 +554,47 @@
     source.start(0, cue.start, Math.max(0.08, cue.end - cue.start));
   }
 
+  // Maps BCP-47 lang codes → ResponsiveVoice voice names
+  const RV_VOICES = {
+    "fr-FR": "French Female",
+    "en-US": "US English Female",
+    "en-GB": "UK English Female",
+    "ja-JP": "Japanese Female",
+    "ko-KR": "Korean Female",
+    "zh-CN": "Chinese Female",
+    "zh-TW": "Traditional Chinese Female",
+    "es-ES": "Spanish Female",
+    "de-DE": "Deutsch Female",
+    "it-IT": "Italian Female",
+    "ru-RU": "Russian Female",
+    "th-TH": "Thai Female",
+    "pt-BR": "Brazilian Portuguese Female",
+    "vi-VN": "Vietnamese Female",
+  };
+
   function speak(text, lang) {
+    const targetLang = lang || state.ttsLang;
+    if (window.responsiveVoice) {
+      const voice = RV_VOICES[targetLang] || "US English Female";
+      responsiveVoice.speak(text, voice, { rate: 0.9 });
+      return;
+    }
+    // Fallback to Web Speech API if ResponsiveVoice didn't load
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang || state.ttsLang;
-    utterance.rate = 0.9;
-    // Delay needed: calling speak() immediately after cancel() is silently ignored in most browsers
-    const doSpeak = () => window.speechSynthesis.speak(utterance);
-    if (window.speechSynthesis.getVoices().length > 0) {
-      setTimeout(doSpeak, 50);
-    } else {
-      // Voices not loaded yet (happens on first call) — wait for them
-      window.speechSynthesis.addEventListener("voiceschanged", doSpeak, { once: true });
-    }
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      const tl = targetLang.toLowerCase();
+      const voices = window.speechSynthesis.getVoices();
+      const voice =
+        voices.find(v => v.lang.toLowerCase() === tl) ||
+        voices.find(v => v.lang.toLowerCase().startsWith(tl.split("-")[0])) ||
+        voices[0];
+      if (voice) utterance.voice = voice;
+      utterance.lang = targetLang;
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }, 150);
   }
 
   function submitVocabulary(event) {
