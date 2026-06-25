@@ -556,11 +556,18 @@
 
   function speak(text, lang) {
     if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang || state.ttsLang;
     utterance.rate = 0.9;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    // Delay needed: calling speak() immediately after cancel() is silently ignored in most browsers
+    const doSpeak = () => window.speechSynthesis.speak(utterance);
+    if (window.speechSynthesis.getVoices().length > 0) {
+      setTimeout(doSpeak, 50);
+    } else {
+      // Voices not loaded yet (happens on first call) — wait for them
+      window.speechSynthesis.addEventListener("voiceschanged", doSpeak, { once: true });
+    }
   }
 
   function submitVocabulary(event) {
@@ -694,7 +701,7 @@
     const currentQuestion = state.quizItems[state.questionIndex];
     if (!currentQuestion || state.feedback) return;
     const normalized = skipped ? "" : state.answer.trim();
-    const expectedAnswer = state.quizDirection === "def-to-term" ? currentQuestion.term : currentQuestion.definition;
+    const expectedAnswer = state.quizDirection === "def-to-term" ? currentQuestion.definition : currentQuestion.term;
     const correct = !skipped && isCorrectAnswer(normalized, expectedAnswer);
     state.answers = [...state.answers, { item: currentQuestion, answer: normalized, correct, skipped }];
     state.feedback = correct ? "correct" : "incorrect";
@@ -847,8 +854,24 @@
           </label>
         </div>
         <label>
-          <span>Mã ngôn ngữ TTS</span>
-          <input data-field="tts-lang" value="${escapeHtml(state.ttsLang)}" placeholder="vd: fr-FR, vi-VN, ja-JP" />
+          <span>Ngôn ngữ đang học</span>
+          <select data-field="tts-lang">
+            ${[
+              ["fr-FR", "🇫🇷 Tiếng Pháp"],
+              ["en-US", "🇺🇸 Tiếng Anh (Mỹ)"],
+              ["en-GB", "🇬🇧 Tiếng Anh (Anh)"],
+              ["ja-JP", "🇯🇵 Tiếng Nhật"],
+              ["ko-KR", "🇰🇷 Tiếng Hàn"],
+              ["zh-CN", "🇨🇳 Tiếng Trung (Giản thể)"],
+              ["zh-TW", "🇹🇼 Tiếng Trung (Phồn thể)"],
+              ["es-ES", "🇪🇸 Tiếng Tây Ban Nha"],
+              ["de-DE", "🇩🇪 Tiếng Đức"],
+              ["it-IT", "🇮🇹 Tiếng Ý"],
+              ["ru-RU", "🇷🇺 Tiếng Nga"],
+              ["th-TH", "🇹🇭 Tiếng Thái"],
+              ["pt-BR", "🇧🇷 Tiếng Bồ Đào Nha"],
+            ].map(([code, label]) => `<option value="${code}" ${state.ttsLang === code ? "selected" : ""}>${label}</option>`).join("")}
+          </select>
         </label>
         <div class="button-row">
           <button class="primary-button large-button" type="button" data-action="start-quiz" ${state.vocabulary.length === 0 ? "disabled" : ""}>Bắt đầu</button>
@@ -1075,6 +1098,11 @@
       element.addEventListener("change", (event) => {
         const field = event.currentTarget.dataset.field;
         if (field === "sort-mode") setState({ sortMode: event.currentTarget.value });
+        if (field === "tts-lang") {
+          state.ttsLang = event.currentTarget.value;
+          try { localStorage.setItem(TTS_LANG_KEY, event.currentTarget.value); } catch {}
+          render();
+        }
       });
     });
 
@@ -1116,7 +1144,11 @@
         if (action === "size") setState({ quizSize: Number(event.currentTarget.dataset.size), customSize: "" });
         if (action === "direction") setState({ quizDirection: event.currentTarget.dataset.dir });
         if (action === "mode") setState({ quizMode: event.currentTarget.dataset.mode });
-        if (action === "speak") speak(event.currentTarget.dataset.text, event.currentTarget.dataset.lang);
+        if (action === "speak") {
+          speak(event.currentTarget.dataset.text, event.currentTarget.dataset.lang);
+          const answerInput = root.querySelector("[data-field='answer']");
+          if (answerInput && !state.feedback) answerInput.focus();
+        }
         if (action === "choose") {
           state.answer = event.currentTarget.dataset.choice;
           submitAnswer(false);
