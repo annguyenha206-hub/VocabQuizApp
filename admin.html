@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Luyện Từ Vựng</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f0f4f0; color: #1a2e1f; }
+    h1, h2, h3 { margin: 0; }
+    a { color: inherit; }
+
+    .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .login-card { background: #fff; border: 1.5px solid #d0ddd0; border-radius: 16px; padding: 40px 36px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.07); }
+    .login-card h1 { font-size: 1.3rem; margin-bottom: 6px; }
+    .login-card p { color: #5a7a5a; font-size: .93rem; margin: 0 0 24px; }
+
+    .main { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .header h1 { font-size: 1.5rem; }
+    .badge { background: #2e9e6b; color: #fff; border-radius: 6px; padding: 3px 10px; font-size: .78rem; font-weight: 600; }
+
+    .card { background: #fff; border: 1.5px solid #d0ddd0; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .card h2 { font-size: 1.05rem; margin-bottom: 16px; }
+
+    label { display: block; font-size: .9rem; font-weight: 500; margin-bottom: 6px; color: #3a5a3a; }
+    input[type=text], input[type=password] {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #c8d8c8; border-radius: 8px;
+      font-size: .95rem; background: #fff; color: #1a2e1f; outline: none;
+      transition: border-color .15s;
+    }
+    input:focus { border-color: #2e9e6b; }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: none; border-radius: 8px; font-size: .92rem; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: linear-gradient(135deg,#2e9e6b,#27a85f); color: #fff; }
+    .btn-danger  { background: #c0392b; color: #fff; }
+    .btn-ghost   { background: transparent; border: 1.5px solid #c8d8c8; color: #3a5a3a; }
+    .btn-sm { padding: 5px 12px; font-size: .82rem; }
+
+    .create-row { display: flex; gap: 10px; align-items: flex-end; }
+    .create-row label { margin-bottom: 0; }
+    .create-row .field { flex: 1; }
+    .create-row .field label { margin-bottom: 5px; display: block; }
+
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th { text-align: left; padding: 8px 10px; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: #5a7a5a; border-bottom: 2px solid #e0ece0; }
+    td { padding: 10px 10px; border-bottom: 1px solid #eef3ee; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .code-text { font-family: monospace; font-weight: 700; font-size: .95rem; letter-spacing: .05em; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+    .pill-active   { background: #d4f0e4; color: #1a6b40; }
+    .pill-inactive { background: #fde8e8; color: #8b0000; }
+    .device-list { margin: 0; padding: 0; list-style: none; }
+    .device-list li { font-size: .8rem; color: #5a7a5a; padding: 2px 0; }
+    .device-list li::before { content: "↳ "; }
+    .empty { color: #8aaa8a; font-style: italic; font-size: .85rem; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #1a2e1f; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: .9rem; opacity: 0; transition: opacity .2s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+
+    .logout-btn { font-size: .85rem; color: #888; cursor: pointer; background: none; border: none; }
+    .logout-btn:hover { color: #c0392b; }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_KEY_STORE = "VQ_ADMIN_KEY";
+let adminKey = sessionStorage.getItem(ADMIN_KEY_STORE) || "";
+
+function toast(msg, ok = true) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.style.background = ok ? "#1a2e1f" : "#c0392b";
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2800);
+}
+
+// ── API helpers ─────────────────────────────────────────────
+async function api(path, options = {}) {
+  const res = await fetch(path, {
+    ...options,
+    headers: { "Content-Type": "application/json", "x-admin-key": adminKey, ...(options.headers || {}) },
+  });
+  if (res.status === 401) { adminKey = ""; sessionStorage.removeItem(ADMIN_KEY_STORE); renderLogin("Sai mật khẩu."); throw new Error("unauth"); }
+  return res;
+}
+
+async function loadCodes() {
+  const res = await api("/api/admin/codes");
+  return res.json();
+}
+
+async function createCode(label) {
+  const res = await api("/api/admin/create-code", { method: "POST", body: JSON.stringify({ label }) });
+  return res.json();
+}
+
+async function toggleCode(id, active) {
+  await api("/api/admin/toggle-code", { method: "POST", body: JSON.stringify({ id, active }) });
+}
+
+// ── Render ───────────────────────────────────────────────────
+function renderLogin(errorMsg) {
+  document.getElementById("app").innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <div style="font-size:2rem;margin-bottom:8px">🔐</div>
+        <h1>Admin Panel</h1>
+        <p>Luyện Từ Vựng</p>
+        ${errorMsg ? `<p style="color:#c0392b;font-size:.88rem;margin-bottom:12px">${errorMsg}</p>` : ""}
+        <form id="login-form">
+          <label>Mật khẩu admin</label>
+          <input type="password" id="pw-input" placeholder="Nhập mật khẩu..." style="margin-bottom:14px" />
+          <button type="submit" class="btn btn-primary" style="width:100%">Đăng nhập</button>
+        </form>
+      </div>
+    </div>`;
+
+  document.getElementById("pw-input").focus();
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    adminKey = document.getElementById("pw-input").value;
+    sessionStorage.setItem(ADMIN_KEY_STORE, adminKey);
+    try { await renderAdmin(); } catch {}
+  });
+}
+
+async function renderAdmin() {
+  const codes = await loadCodes();
+
+  document.getElementById("app").innerHTML = `
+    <div class="main">
+      <div class="header">
+        <div style="display:flex;align-items:center;gap:12px">
+          <h1>📚 Admin Panel</h1>
+          <span class="badge">Luyện Từ Vựng</span>
+        </div>
+        <button class="logout-btn" id="logout-btn">Đăng xuất</button>
+      </div>
+
+      <div class="card">
+        <h2>Tạo mã truy cập mới</h2>
+        <div class="create-row">
+          <div class="field">
+            <label>Tên người dùng</label>
+            <input type="text" id="new-label" placeholder="Ví dụ: Nguyễn Văn A" />
+          </div>
+          <button class="btn btn-primary" id="create-btn">＋ Tạo mã</button>
+        </div>
+        <div id="new-code-result" style="margin-top:14px;display:none">
+          <p style="font-size:.88rem;color:#5a7a5a;margin:0 0 4px">Mã truy cập:</p>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="code-text" id="new-code-display" style="font-size:1.2rem;color:#2e9e6b"></span>
+            <button class="btn btn-ghost btn-sm" id="copy-code-btn">Sao chép</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Danh sách mã (${codes.length})</h2>
+        ${codes.length === 0 ? `<p class="empty">Chưa có mã nào.</p>` : `
+        <table>
+          <thead><tr>
+            <th>Mã</th><th>Tên</th><th>Trạng thái</th><th>Thiết bị đã dùng</th><th>Ngày tạo</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${codes.map(c => `
+              <tr data-id="${c.id}">
+                <td><span class="code-text">${c.code}</span></td>
+                <td>${esc(c.label)}</td>
+                <td><span class="pill ${c.active ? 'pill-active' : 'pill-inactive'}">${c.active ? 'Hoạt động' : 'Đã tắt'}</span></td>
+                <td>
+                  ${!c.device_sessions?.length
+                    ? `<span class="empty">Chưa dùng</span>`
+                    : `<ul class="device-list">${c.device_sessions.map(d => `
+                        <li title="${esc(d.user_agent || '')}">
+                          ${parseUA(d.user_agent)} · ${fmtDate(d.first_used)}
+                        </li>`).join("")}</ul>`}
+                </td>
+                <td style="color:#8aaa8a;font-size:.82rem">${fmtDate(c.created_at)}</td>
+                <td>
+                  <button class="btn btn-ghost btn-sm toggle-btn" data-id="${c.id}" data-active="${c.active}">
+                    ${c.active ? 'Tắt' : 'Bật lại'}
+                  </button>
+                </td>
+              </tr>`).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>`;
+
+  document.getElementById("logout-btn").onclick = () => {
+    adminKey = ""; sessionStorage.removeItem(ADMIN_KEY_STORE); renderLogin();
+  };
+
+  document.getElementById("create-btn").onclick = async () => {
+    const label = document.getElementById("new-label").value.trim();
+    if (!label) { toast("Nhập tên người dùng trước.", false); return; }
+    const btn = document.getElementById("create-btn");
+    btn.disabled = true; btn.textContent = "Đang tạo...";
+    try {
+      const [row] = await createCode(label);
+      document.getElementById("new-code-result").style.display = "block";
+      document.getElementById("new-code-display").textContent = row.code;
+      document.getElementById("copy-code-btn").onclick = () => {
+        navigator.clipboard.writeText(row.code).then(() => toast("Đã sao chép!"));
+      };
+      toast("Đã tạo mã cho " + label + "!");
+      await renderAdmin();
+    } catch { toast("Lỗi khi tạo mã.", false); }
+    btn.disabled = false; btn.textContent = "＋ Tạo mã";
+  };
+
+  document.querySelectorAll(".toggle-btn").forEach(btn => {
+    btn.onclick = async () => {
+      const { id, active } = btn.dataset;
+      btn.disabled = true;
+      try {
+        await toggleCode(id, active === "true" ? false : true);
+        toast(active === "true" ? "Đã tắt mã." : "Đã bật lại mã.");
+        await renderAdmin();
+      } catch { toast("Lỗi.", false); btn.disabled = false; }
+    };
+  });
+}
+
+function esc(str) { return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmtDate(iso) { if (!iso) return "—"; const d = new Date(iso); return d.toLocaleDateString("vi-VN"); }
+function parseUA(ua) {
+  if (!ua) return "Thiết bị không xác định";
+  if (/iPhone|iPad/.test(ua)) return "📱 iOS";
+  if (/Android/.test(ua)) return "📱 Android";
+  if (/Mac/.test(ua)) return "💻 Mac";
+  if (/Windows/.test(ua)) return "🖥️ Windows";
+  return "🌐 Trình duyệt";
+}
+
+// ── Init ─────────────────────────────────────────────────────
+if (adminKey) {
+  renderAdmin().catch(() => renderLogin());
+} else {
+  renderLogin();
+}
+</script>
+</body>
+</html>

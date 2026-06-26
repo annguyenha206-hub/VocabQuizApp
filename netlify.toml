@@ -1,0 +1,27 @@
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/validate"
+  to = "/.netlify/functions/validate"
+  status = 200
+
+[[redirects]]
+  from = "/api/check-session"
+  to = "/.netlify/functions/check-session"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/codes"
+  to = "/.netlify/functions/admin-codes"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/create-code"
+  to = "/.netlify/functions/admin-create-code"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/toggle-code"
+  to = "/.netlify/functions/admin-toggle-code"
+  status = 200

@@ -9,6 +9,839 @@
   const QUIZ_SHARE_PREFIX = "quiz=";
   const TTS_LANG_KEY = "french_vocabulary_quizzer_tts_lang_v1";
   const SOUND_SRC = "./assets/correct-wrong.mp3";
+
+  function bi(id, term, definition) { return { id, term, definition }; }
+  const BUILTIN_QUIZZES = [
+    {
+      id: "builtin-basic",
+      name: "📢 Giao tiếp cơ bản",
+      builtin: true,
+      items: [
+        bi("bc001","hello","xin chào"),
+        bi("bc002","goodbye","tạm biệt"),
+        bi("bc003","thank you","cảm ơn"),
+        bi("bc004","you're welcome","không có gì"),
+        bi("bc005","please","làm ơn"),
+        bi("bc006","sorry","xin lỗi"),
+        bi("bc007","excuse me","xin lỗi / cho hỏi"),
+        bi("bc008","yes","có / vâng"),
+        bi("bc009","no","không"),
+        bi("bc010","I don't understand","tôi không hiểu"),
+        bi("bc011","can you repeat that?","bạn có thể nhắc lại không?"),
+        bi("bc012","do you speak English?","bạn có nói tiếng Anh không?"),
+        bi("bc013","my name is...","tên tôi là..."),
+        bi("bc014","nice to meet you","rất vui được gặp bạn"),
+        bi("bc015","how are you?","bạn có khỏe không?"),
+        bi("bc016","I'm fine","tôi khỏe"),
+        bi("bc017","good morning","chào buổi sáng"),
+        bi("bc018","good afternoon","chào buổi chiều"),
+        bi("bc019","good evening","chào buổi tối"),
+        bi("bc020","good night","chúc ngủ ngon"),
+        bi("bc021","see you later","hẹn gặp lại"),
+        bi("bc022","happy birthday","chúc mừng sinh nhật"),
+        bi("bc023","congratulations","xin chúc mừng"),
+        bi("bc024","take care","bảo trọng nhé"),
+        bi("bc025","what time is it?","mấy giờ rồi?"),
+        bi("bc026","where is...?","... ở đâu?"),
+        bi("bc027","how much?","bao nhiêu tiền?"),
+        bi("bc028","help!","cứu tôi / giúp với!"),
+        bi("bc029","I need help","tôi cần giúp đỡ"),
+        bi("bc030","I don't know","tôi không biết"),
+        bi("bc031","speak slowly, please","xin hãy nói chậm thôi"),
+        bi("bc032","can you help me?","bạn có thể giúp tôi không?"),
+        bi("bc033","one","một"),
+        bi("bc034","two","hai"),
+        bi("bc035","three","ba"),
+        bi("bc036","four","bốn"),
+        bi("bc037","five","năm"),
+        bi("bc038","six","sáu"),
+        bi("bc039","seven","bảy"),
+        bi("bc040","eight","tám"),
+        bi("bc041","nine","chín"),
+        bi("bc042","ten","mười"),
+        bi("bc043","eleven","mười một"),
+        bi("bc044","twelve","mười hai"),
+        bi("bc045","thirteen","mười ba"),
+        bi("bc046","fourteen","mười bốn"),
+        bi("bc047","fifteen","mười lăm"),
+        bi("bc048","sixteen","mười sáu"),
+        bi("bc049","seventeen","mười bảy"),
+        bi("bc050","eighteen","mười tám"),
+        bi("bc051","nineteen","mười chín"),
+        bi("bc052","twenty","hai mươi"),
+        bi("bc053","thirty","ba mươi"),
+        bi("bc054","forty","bốn mươi"),
+        bi("bc055","fifty","năm mươi"),
+        bi("bc056","hundred","một trăm"),
+        bi("bc057","thousand","một nghìn"),
+        bi("bc058","million","một triệu"),
+        bi("bc059","first","thứ nhất"),
+        bi("bc060","second","thứ hai"),
+        bi("bc061","third","thứ ba"),
+        bi("bc062","Monday","thứ Hai"),
+        bi("bc063","Tuesday","thứ Ba"),
+        bi("bc064","Wednesday","thứ Tư"),
+        bi("bc065","Thursday","thứ Năm"),
+        bi("bc066","Friday","thứ Sáu"),
+        bi("bc067","Saturday","thứ Bảy"),
+        bi("bc068","Sunday","Chủ Nhật"),
+        bi("bc069","January","tháng Một"),
+        bi("bc070","February","tháng Hai"),
+        bi("bc071","March","tháng Ba"),
+        bi("bc072","April","tháng Tư"),
+        bi("bc073","May","tháng Năm"),
+        bi("bc074","June","tháng Sáu"),
+        bi("bc075","July","tháng Bảy"),
+        bi("bc076","August","tháng Tám"),
+        bi("bc077","September","tháng Chín"),
+        bi("bc078","October","tháng Mười"),
+        bi("bc079","November","tháng Mười Một"),
+        bi("bc080","December","tháng Mười Hai"),
+        bi("bc081","spring","mùa xuân"),
+        bi("bc082","summer","mùa hè"),
+        bi("bc083","autumn","mùa thu"),
+        bi("bc084","winter","mùa đông"),
+        bi("bc085","today","hôm nay"),
+        bi("bc086","tomorrow","ngày mai"),
+        bi("bc087","yesterday","hôm qua"),
+        bi("bc088","now","bây giờ"),
+        bi("bc089","later","sau này"),
+        bi("bc090","soon","sắp thôi"),
+        bi("bc091","always","luôn luôn"),
+        bi("bc092","never","không bao giờ"),
+        bi("bc093","sometimes","đôi khi"),
+        bi("bc094","often","thường xuyên"),
+        bi("bc095","already","rồi / đã rồi"),
+        bi("bc096","yet","chưa"),
+        bi("bc097","before","trước"),
+        bi("bc098","after","sau"),
+        bi("bc099","early","sớm"),
+        bi("bc100","late","muộn / trễ"),
+        bi("bc101","morning","buổi sáng"),
+        bi("bc102","afternoon","buổi chiều"),
+        bi("bc103","evening","buổi tối"),
+        bi("bc104","night","ban đêm"),
+        bi("bc105","week","tuần"),
+        bi("bc106","month","tháng"),
+        bi("bc107","year","năm"),
+        bi("bc108","hour","giờ"),
+        bi("bc109","minute","phút"),
+        bi("bc110","sunny","trời nắng"),
+        bi("bc111","rainy","trời mưa"),
+        bi("bc112","cloudy","trời nhiều mây"),
+        bi("bc113","windy","trời có gió"),
+        bi("bc114","hot","nóng"),
+        bi("bc115","cold","lạnh"),
+        bi("bc116","warm","ấm"),
+        bi("bc117","cool","mát"),
+        bi("bc118","foggy","có sương mù"),
+        bi("bc119","stormy","có bão"),
+        bi("bc120","snow","tuyết"),
+        bi("bc121","rainbow","cầu vồng"),
+        bi("bc122","mother","mẹ"),
+        bi("bc123","father","bố / cha"),
+        bi("bc124","sister","chị / em gái"),
+        bi("bc125","brother","anh / em trai"),
+        bi("bc126","grandmother","bà"),
+        bi("bc127","grandfather","ông"),
+        bi("bc128","husband","chồng"),
+        bi("bc129","wife","vợ"),
+        bi("bc130","son","con trai"),
+        bi("bc131","daughter","con gái"),
+        bi("bc132","friend","bạn bè"),
+        bi("bc133","baby","em bé"),
+        bi("bc134","child","đứa trẻ"),
+        bi("bc135","adult","người lớn"),
+        bi("bc136","relative","họ hàng"),
+        bi("bc137","uncle","chú / cậu / bác"),
+        bi("bc138","aunt","cô / dì / bác gái"),
+        bi("bc139","cousin","anh chị em họ"),
+        bi("bc140","eat","ăn"),
+        bi("bc141","drink","uống"),
+        bi("bc142","sleep","ngủ"),
+        bi("bc143","wake up","thức dậy"),
+        bi("bc144","walk","đi bộ"),
+        bi("bc145","run","chạy"),
+        bi("bc146","sit","ngồi"),
+        bi("bc147","stand","đứng"),
+        bi("bc148","open","mở"),
+        bi("bc149","close","đóng"),
+        bi("bc150","buy","mua"),
+        bi("bc151","sell","bán"),
+        bi("bc152","pay","trả tiền"),
+        bi("bc153","wait","đợi / chờ"),
+        bi("bc154","come","đến / lại"),
+        bi("bc155","go","đi"),
+        bi("bc156","speak","nói"),
+        bi("bc157","listen","nghe"),
+        bi("bc158","read","đọc"),
+        bi("bc159","write","viết"),
+        bi("bc160","call","gọi điện"),
+        bi("bc161","cook","nấu ăn"),
+        bi("bc162","clean","dọn dẹp"),
+        bi("bc163","work","làm việc"),
+        bi("bc164","study","học"),
+        bi("bc165","play","chơi"),
+        bi("bc166","watch","xem"),
+        bi("bc167","drive","lái xe"),
+        bi("bc168","swim","bơi"),
+        bi("bc169","give","đưa / cho"),
+        bi("bc170","take","lấy / cầm"),
+        bi("bc171","make","làm / tạo"),
+        bi("bc172","like","thích"),
+        bi("bc173","love","yêu / yêu thích"),
+        bi("bc174","hate","ghét"),
+        bi("bc175","want","muốn"),
+        bi("bc176","need","cần"),
+        bi("bc177","know","biết"),
+        bi("bc178","think","nghĩ"),
+        bi("bc179","feel","cảm thấy"),
+        bi("bc180","see","nhìn / thấy"),
+        bi("bc181","hear","nghe thấy"),
+        bi("bc182","big","to / lớn"),
+        bi("bc183","small","nhỏ"),
+        bi("bc184","tall","cao"),
+        bi("bc185","short","thấp / ngắn"),
+        bi("bc186","young","trẻ"),
+        bi("bc187","old","già / cũ"),
+        bi("bc188","beautiful","đẹp"),
+        bi("bc189","good","tốt"),
+        bi("bc190","bad","xấu / tệ"),
+        bi("bc191","fast","nhanh"),
+        bi("bc192","slow","chậm"),
+        bi("bc193","clean","sạch"),
+        bi("bc194","dirty","bẩn"),
+        bi("bc195","cheap","rẻ"),
+        bi("bc196","expensive","đắt"),
+        bi("bc197","near","gần"),
+        bi("bc198","far","xa"),
+        bi("bc199","new","mới"),
+        bi("bc200","heavy","nặng")
+      ]
+    },
+    {
+      id: "builtin-work",
+      name: "💼 Công việc & văn phòng",
+      builtin: true,
+      items: [
+        bi("wk001","meeting","cuộc họp"),
+        bi("wk002","deadline","hạn chót"),
+        bi("wk003","report (n)","báo cáo"),
+        bi("wk004","presentation","bài thuyết trình"),
+        bi("wk005","email","thư điện tử"),
+        bi("wk006","manager","quản lý"),
+        bi("wk007","colleague","đồng nghiệp"),
+        bi("wk008","schedule (n)","lịch trình"),
+        bi("wk009","project","dự án"),
+        bi("wk010","budget","ngân sách"),
+        bi("wk011","negotiation","đàm phán"),
+        bi("wk012","contract","hợp đồng"),
+        bi("wk013","invoice","hóa đơn"),
+        bi("wk014","overtime","làm thêm giờ"),
+        bi("wk015","promotion","thăng chức"),
+        bi("wk016","salary","lương"),
+        bi("wk017","resign (v)","từ chức"),
+        bi("wk018","interview","phỏng vấn"),
+        bi("wk019","resume (n)","hồ sơ xin việc / CV"),
+        bi("wk020","feedback","phản hồi"),
+        bi("wk021","agenda","chương trình họp"),
+        bi("wk022","minutes (n)","biên bản cuộc họp"),
+        bi("wk023","conference","hội nghị"),
+        bi("wk024","department","phòng ban"),
+        bi("wk025","employee","nhân viên"),
+        bi("wk026","employer","người sử dụng lao động"),
+        bi("wk027","client","khách hàng"),
+        bi("wk028","profit","lợi nhuận"),
+        bi("wk029","headquarters","trụ sở chính"),
+        bi("wk030","approve (v)","phê duyệt"),
+        bi("wk031","postpone (v)","trì hoãn / dời lại"),
+        bi("wk032","workload","khối lượng công việc"),
+        bi("wk033","CEO","Giám đốc điều hành"),
+        bi("wk034","director","giám đốc"),
+        bi("wk035","supervisor","người giám sát"),
+        bi("wk036","team leader","trưởng nhóm"),
+        bi("wk037","intern","thực tập sinh"),
+        bi("wk038","accountant","kế toán viên"),
+        bi("wk039","engineer","kỹ sư"),
+        bi("wk040","designer","nhà thiết kế"),
+        bi("wk041","developer","lập trình viên"),
+        bi("wk042","analyst","nhà phân tích"),
+        bi("wk043","consultant","tư vấn viên"),
+        bi("wk044","receptionist","lễ tân"),
+        bi("wk045","secretary","thư ký"),
+        bi("wk046","HR manager","quản lý nhân sự"),
+        bi("wk047","sales representative","đại diện kinh doanh"),
+        bi("wk048","marketing manager","quản lý marketing"),
+        bi("wk049","lawyer","luật sư"),
+        bi("wk050","project manager","quản lý dự án"),
+        bi("wk051","stakeholder","các bên liên quan"),
+        bi("wk052","shareholder","cổ đông"),
+        bi("wk053","computer","máy tính"),
+        bi("wk054","laptop","máy tính xách tay"),
+        bi("wk055","monitor","màn hình"),
+        bi("wk056","keyboard","bàn phím"),
+        bi("wk057","mouse","chuột máy tính"),
+        bi("wk058","printer","máy in"),
+        bi("wk059","scanner","máy quét"),
+        bi("wk060","projector","máy chiếu"),
+        bi("wk061","whiteboard","bảng trắng"),
+        bi("wk062","desk","bàn làm việc"),
+        bi("wk063","chair","ghế"),
+        bi("wk064","filing cabinet","tủ đựng hồ sơ"),
+        bi("wk065","stapler","dập ghim"),
+        bi("wk066","folder","bìa hồ sơ"),
+        bi("wk067","notebook","sổ tay"),
+        bi("wk068","pen","bút"),
+        bi("wk069","highlighter","bút đánh dấu"),
+        bi("wk070","calendar","lịch"),
+        bi("wk071","telephone","điện thoại"),
+        bi("wk072","photocopier","máy photocopy"),
+        bi("wk073","brainstorm","động não / lên ý tưởng"),
+        bi("wk074","draft (v)","soạn thảo"),
+        bi("wk075","revise","chỉnh sửa"),
+        bi("wk076","submit","nộp"),
+        bi("wk077","review (v)","xem xét / đánh giá"),
+        bi("wk078","reject","từ chối"),
+        bi("wk079","delegate","ủy quyền / giao việc"),
+        bi("wk080","coordinate","phối hợp"),
+        bi("wk081","collaborate","cộng tác"),
+        bi("wk082","implement","thực hiện / triển khai"),
+        bi("wk083","evaluate","đánh giá"),
+        bi("wk084","monitor (v)","theo dõi"),
+        bi("wk085","track","theo dõi / giám sát"),
+        bi("wk086","prioritize","ưu tiên"),
+        bi("wk087","multitask","làm nhiều việc cùng lúc"),
+        bi("wk088","proofread","đọc soát lỗi"),
+        bi("wk089","launch","ra mắt / khởi động"),
+        bi("wk090","scale","mở rộng quy mô"),
+        bi("wk091","outsource","thuê ngoài"),
+        bi("wk092","automate","tự động hóa"),
+        bi("wk093","hire","tuyển dụng"),
+        bi("wk094","fire (v)","sa thải"),
+        bi("wk095","onboard","hướng dẫn nhân viên mới"),
+        bi("wk096","train (v)","đào tạo"),
+        bi("wk097","performance review","đánh giá hiệu suất"),
+        bi("wk098","bonus","tiền thưởng"),
+        bi("wk099","benefits","phúc lợi"),
+        bi("wk100","sick leave","nghỉ ốm"),
+        bi("wk101","annual leave","nghỉ phép năm"),
+        bi("wk102","maternity leave","nghỉ thai sản"),
+        bi("wk103","remote work","làm việc từ xa"),
+        bi("wk104","hybrid work","làm việc kết hợp"),
+        bi("wk105","full-time","toàn thời gian"),
+        bi("wk106","part-time","bán thời gian"),
+        bi("wk107","freelance","làm tự do"),
+        bi("wk108","internship","thực tập"),
+        bi("wk109","probation period","thời gian thử việc"),
+        bi("wk110","notice period","thời gian thông báo nghỉ việc"),
+        bi("wk111","job description","mô tả công việc"),
+        bi("wk112","reference","thư giới thiệu"),
+        bi("wk113","revenue","doanh thu"),
+        bi("wk114","cost","chi phí"),
+        bi("wk115","expense","khoản chi"),
+        bi("wk116","loss","thua lỗ"),
+        bi("wk117","investment","đầu tư"),
+        bi("wk118","strategy","chiến lược"),
+        bi("wk119","competitor","đối thủ cạnh tranh"),
+        bi("wk120","market share","thị phần"),
+        bi("wk121","target","mục tiêu"),
+        bi("wk122","KPI","chỉ số hiệu suất chính"),
+        bi("wk123","ROI","lợi tức đầu tư"),
+        bi("wk124","cash flow","dòng tiền"),
+        bi("wk125","asset","tài sản"),
+        bi("wk126","liability","nợ phải trả"),
+        bi("wk127","tax","thuế"),
+        bi("wk128","discount","giảm giá"),
+        bi("wk129","commission","hoa hồng"),
+        bi("wk130","quotation","báo giá"),
+        bi("wk131","proposal","đề xuất"),
+        bi("wk132","tender","đấu thầu"),
+        bi("wk133","follow up","theo dõi tiếp / hỏi thăm lại"),
+        bi("wk134","cc (carbon copy)","gửi bản sao"),
+        bi("wk135","attachment","tệp đính kèm"),
+        bi("wk136","forward","chuyển tiếp"),
+        bi("wk137","reply all","trả lời tất cả"),
+        bi("wk138","urgent","khẩn cấp"),
+        bi("wk139","ASAP","càng sớm càng tốt"),
+        bi("wk140","FYI","để bạn biết"),
+        bi("wk141","action item","việc cần làm"),
+        bi("wk142","summary","tóm tắt"),
+        bi("wk143","update (n)","thông tin cập nhật"),
+        bi("wk144","clarify","làm rõ"),
+        bi("wk145","confirm","xác nhận"),
+        bi("wk146","acknowledge","xác nhận đã nhận"),
+        bi("wk147","reschedule","đổi lịch"),
+        bi("wk148","escalate","leo thang / báo lên cấp trên"),
+        bi("wk149","loop in","thêm vào vòng thông tin"),
+        bi("wk150","sign off","phê duyệt / chấp thuận"),
+        bi("wk151","software","phần mềm"),
+        bi("wk152","hardware","phần cứng"),
+        bi("wk153","database","cơ sở dữ liệu"),
+        bi("wk154","server","máy chủ"),
+        bi("wk155","cloud","điện toán đám mây"),
+        bi("wk156","backup","sao lưu"),
+        bi("wk157","update (v)","cập nhật"),
+        bi("wk158","install","cài đặt"),
+        bi("wk159","crash","sự cố hệ thống"),
+        bi("wk160","bug","lỗi phần mềm"),
+        bi("wk161","troubleshoot","khắc phục sự cố"),
+        bi("wk162","IT support","bộ phận hỗ trợ kỹ thuật"),
+        bi("wk163","password","mật khẩu"),
+        bi("wk164","login","đăng nhập"),
+        bi("wk165","network","mạng"),
+        bi("wk166","VPN","mạng riêng ảo"),
+        bi("wk167","cybersecurity","an ninh mạng"),
+        bi("wk168","data breach","rò rỉ dữ liệu"),
+        bi("wk169","encryption","mã hóa"),
+        bi("wk170","two-factor authentication","xác thực hai yếu tố"),
+        bi("wk171","I'll get back to you","tôi sẽ phản hồi lại bạn"),
+        bi("wk172","let's touch base","hãy liên lạc với nhau"),
+        bi("wk173","please find attached","vui lòng xem tệp đính kèm"),
+        bi("wk174","as per our discussion","như đã thảo luận"),
+        bi("wk175","keep me posted","hãy cập nhật cho tôi"),
+        bi("wk176","move forward","tiến lên / tiến hành"),
+        bi("wk177","on track","đúng tiến độ"),
+        bi("wk178","behind schedule","trễ tiến độ"),
+        bi("wk179","wrap up","kết thúc / tổng kết"),
+        bi("wk180","task","nhiệm vụ / công việc"),
+        bi("wk181","deadline extension","gia hạn thời gian"),
+        bi("wk182","org chart","sơ đồ tổ chức"),
+        bi("wk183","workflow","quy trình làm việc"),
+        bi("wk184","meeting room","phòng họp"),
+        bi("wk185","conference call","cuộc gọi hội nghị"),
+        bi("wk186","agenda item","mục trong chương trình họp"),
+        bi("wk187","team building","xây dựng tinh thần đội nhóm"),
+        bi("wk188","annual report","báo cáo thường niên"),
+        bi("wk189","quarterly review","đánh giá hàng quý"),
+        bi("wk190","business trip","chuyến công tác"),
+        bi("wk191","expense report","báo cáo chi phí"),
+        bi("wk192","reimbursement","hoàn trả chi phí"),
+        bi("wk193","signed contract","hợp đồng đã ký"),
+        bi("wk194","approval","sự phê duyệt"),
+        bi("wk195","cc'd","đã được sao chép trong email"),
+        bi("wk196","attached file","tệp đính kèm"),
+        bi("wk197","business card","danh thiếp"),
+        bi("wk198","company policy","chính sách công ty"),
+        bi("wk199","office supplies","văn phòng phẩm"),
+        bi("wk200","meeting notes","ghi chú cuộc họp")
+      ]
+    },
+    {
+      id: "builtin-travel",
+      name: "✈️ Du lịch",
+      builtin: true,
+      items: [
+        bi("tv001","passport","hộ chiếu"),
+        bi("tv002","airport","sân bay"),
+        bi("tv003","hotel","khách sạn"),
+        bi("tv004","ticket","vé"),
+        bi("tv005","boarding pass","thẻ lên máy bay"),
+        bi("tv006","luggage","hành lý"),
+        bi("tv007","customs","hải quan"),
+        bi("tv008","taxi","xe taxi"),
+        bi("tv009","bus","xe buýt"),
+        bi("tv010","train","tàu hỏa"),
+        bi("tv011","subway","tàu điện ngầm"),
+        bi("tv012","map","bản đồ"),
+        bi("tv013","restaurant","nhà hàng"),
+        bi("tv014","menu","thực đơn"),
+        bi("tv015","bill (n)","hóa đơn"),
+        bi("tv016","reservation","đặt phòng / đặt chỗ"),
+        bi("tv017","check-in","làm thủ tục nhận phòng"),
+        bi("tv018","check-out","trả phòng"),
+        bi("tv019","sightseeing","tham quan"),
+        bi("tv020","tour guide","hướng dẫn viên"),
+        bi("tv021","flight","chuyến bay"),
+        bi("tv022","delay (n)","sự chậm trễ / hoãn"),
+        bi("tv023","currency","tiền tệ"),
+        bi("tv024","exchange rate","tỷ giá hối đoái"),
+        bi("tv025","accommodation","chỗ ở"),
+        bi("tv026","destination","điểm đến"),
+        bi("tv027","departure","khởi hành"),
+        bi("tv028","arrival","đến nơi"),
+        bi("tv029","visa","thị thực"),
+        bi("tv030","tourist","khách du lịch"),
+        bi("tv031","refund","hoàn tiền"),
+        bi("tv032","lost and found","phòng đồ thất lạc"),
+        bi("tv033","car","xe ô tô"),
+        bi("tv034","motorbike","xe máy"),
+        bi("tv035","bicycle","xe đạp"),
+        bi("tv036","ferry","phà"),
+        bi("tv037","cable car","cáp treo"),
+        bi("tv038","tram","xe điện"),
+        bi("tv039","rideshare","dịch vụ đi chung xe"),
+        bi("tv040","rental car","xe thuê"),
+        bi("tv041","highway","đường cao tốc"),
+        bi("tv042","traffic jam","ùn tắc giao thông"),
+        bi("tv043","gas station","trạm xăng"),
+        bi("tv044","parking lot","bãi đỗ xe"),
+        bi("tv045","toll","phí cầu đường"),
+        bi("tv046","seatbelt","dây an toàn"),
+        bi("tv047","driver","tài xế"),
+        bi("tv048","passenger","hành khách"),
+        bi("tv049","route","tuyến đường"),
+        bi("tv050","one-way street","đường một chiều"),
+        bi("tv051","pedestrian","người đi bộ"),
+        bi("tv052","crosswalk","vạch qua đường"),
+        bi("tv053","terminal","nhà ga / sảnh"),
+        bi("tv054","gate","cổng"),
+        bi("tv055","departure lounge","phòng chờ bay"),
+        bi("tv056","baggage claim","khu nhận hành lý"),
+        bi("tv057","check-in counter","quầy làm thủ tục"),
+        bi("tv058","immigration","kiểm tra nhập cảnh"),
+        bi("tv059","security checkpoint","trạm kiểm tra an ninh"),
+        bi("tv060","carry-on","hành lý xách tay"),
+        bi("tv061","overweight baggage","hành lý quá cân"),
+        bi("tv062","transit","quá cảnh"),
+        bi("tv063","layover","thời gian dừng chân"),
+        bi("tv064","direct flight","chuyến bay thẳng"),
+        bi("tv065","one-way ticket","vé một chiều"),
+        bi("tv066","round trip","vé khứ hồi"),
+        bi("tv067","economy class","hạng phổ thông"),
+        bi("tv068","business class","hạng thương gia"),
+        bi("tv069","window seat","ghế cạnh cửa sổ"),
+        bi("tv070","aisle seat","ghế cạnh lối đi"),
+        bi("tv071","boarding time","giờ lên máy bay"),
+        bi("tv072","flight cancellation","hủy chuyến bay"),
+        bi("tv073","hostel","nhà trọ"),
+        bi("tv074","motel","khách sạn nhỏ ven đường"),
+        bi("tv075","resort","khu nghỉ dưỡng"),
+        bi("tv076","front desk","lễ tân"),
+        bi("tv077","room service","dịch vụ phòng"),
+        bi("tv078","breakfast included","bao gồm bữa sáng"),
+        bi("tv079","single room","phòng đơn"),
+        bi("tv080","double room","phòng đôi"),
+        bi("tv081","suite","phòng hạng sang"),
+        bi("tv082","housekeeping","dọn phòng"),
+        bi("tv083","minibar","tủ đồ uống nhỏ trong phòng"),
+        bi("tv084","wake-up call","gọi đánh thức"),
+        bi("tv085","swimming pool","hồ bơi"),
+        bi("tv086","gym","phòng tập thể dục"),
+        bi("tv087","spa","trung tâm chăm sóc sức khỏe"),
+        bi("tv088","elevator","thang máy"),
+        bi("tv089","laundry","giặt ủi"),
+        bi("tv090","key card","thẻ khóa phòng"),
+        bi("tv091","do not disturb","không làm phiền"),
+        bi("tv092","room number","số phòng"),
+        bi("tv093","appetizer","món khai vị"),
+        bi("tv094","main course","món chính"),
+        bi("tv095","dessert","món tráng miệng"),
+        bi("tv096","vegetarian","ăn chay"),
+        bi("tv097","vegan","thuần chay"),
+        bi("tv098","spicy","cay"),
+        bi("tv099","mild","nhẹ / không cay"),
+        bi("tv100","gluten-free","không chứa gluten"),
+        bi("tv101","food allergy","dị ứng thực phẩm"),
+        bi("tv102","tap water","nước máy"),
+        bi("tv103","still water","nước lọc không có gas"),
+        bi("tv104","sparkling water","nước có gas"),
+        bi("tv105","tip","tiền tip / tiền thưởng"),
+        bi("tv106","takeaway","mang đi"),
+        bi("tv107","street food","thức ăn đường phố"),
+        bi("tv108","local specialty","đặc sản địa phương"),
+        bi("tv109","seafood","hải sản"),
+        bi("tv110","brunch","bữa ăn sáng muộn"),
+        bi("tv111","buffet","tiệc buffet"),
+        bi("tv112","waiter","bồi bàn"),
+        bi("tv113","order (v)","gọi món"),
+        bi("tv114","portion","khẩu phần"),
+        bi("tv115","souvenir","quà lưu niệm"),
+        bi("tv116","discount","giảm giá"),
+        bi("tv117","receipt","hóa đơn / biên lai"),
+        bi("tv118","credit card","thẻ tín dụng"),
+        bi("tv119","cash","tiền mặt"),
+        bi("tv120","ATM","máy rút tiền tự động"),
+        bi("tv121","duty-free shop","cửa hàng miễn thuế"),
+        bi("tv122","fitting room","phòng thử đồ"),
+        bi("tv123","exchange policy","chính sách đổi hàng"),
+        bi("tv124","bargain","mặc cả"),
+        bi("tv125","price tag","thẻ giá"),
+        bi("tv126","shop assistant","nhân viên bán hàng"),
+        bi("tv127","queue","xếp hàng"),
+        bi("tv128","brand","thương hiệu"),
+        bi("tv129","shopping mall","trung tâm thương mại"),
+        bi("tv130","market","chợ"),
+        bi("tv131","open","mở cửa"),
+        bi("tv132","closed","đóng cửa"),
+        bi("tv133","sold out","hết hàng"),
+        bi("tv134","gift","quà tặng"),
+        bi("tv135","turn left","rẽ trái"),
+        bi("tv136","turn right","rẽ phải"),
+        bi("tv137","go straight","đi thẳng"),
+        bi("tv138","intersection","ngã tư"),
+        bi("tv139","roundabout","vòng xuyến"),
+        bi("tv140","bridge","cầu"),
+        bi("tv141","tunnel","đường hầm"),
+        bi("tv142","north","hướng bắc"),
+        bi("tv143","south","hướng nam"),
+        bi("tv144","east","hướng đông"),
+        bi("tv145","west","hướng tây"),
+        bi("tv146","nearby","gần đây"),
+        bi("tv147","landmark","địa danh nổi tiếng"),
+        bi("tv148","uphill","lên dốc"),
+        bi("tv149","downhill","xuống dốc"),
+        bi("tv150","corner","góc đường"),
+        bi("tv151","in front of","phía trước"),
+        bi("tv152","behind","phía sau"),
+        bi("tv153","next to","bên cạnh"),
+        bi("tv154","across from","đối diện"),
+        bi("tv155","museum","bảo tàng"),
+        bi("tv156","temple","đền / chùa"),
+        bi("tv157","pagoda","chùa"),
+        bi("tv158","palace","cung điện"),
+        bi("tv159","national park","vườn quốc gia"),
+        bi("tv160","beach","bãi biển"),
+        bi("tv161","mountain","núi"),
+        bi("tv162","waterfall","thác nước"),
+        bi("tv163","castle","lâu đài"),
+        bi("tv164","cathedral","nhà thờ lớn"),
+        bi("tv165","viewpoint","điểm ngắm cảnh"),
+        bi("tv166","entrance fee","phí vào cửa"),
+        bi("tv167","opening hours","giờ mở cửa"),
+        bi("tv168","audio guide","hướng dẫn bằng âm thanh"),
+        bi("tv169","guided tour","tour có hướng dẫn viên"),
+        bi("tv170","historical site","di tích lịch sử"),
+        bi("tv171","art gallery","phòng trưng bày nghệ thuật"),
+        bi("tv172","night market","chợ đêm"),
+        bi("tv173","botanical garden","vườn thực vật"),
+        bi("tv174","zoo","vườn thú"),
+        bi("tv175","emergency","tình huống khẩn cấp"),
+        bi("tv176","police station","đồn cảnh sát"),
+        bi("tv177","ambulance","xe cứu thương"),
+        bi("tv178","fire truck","xe cứu hỏa"),
+        bi("tv179","hospital","bệnh viện"),
+        bi("tv180","pharmacy","nhà thuốc"),
+        bi("tv181","doctor","bác sĩ"),
+        bi("tv182","injured","bị thương"),
+        bi("tv183","stolen","bị mất cắp"),
+        bi("tv184","travel insurance","bảo hiểm du lịch"),
+        bi("tv185","embassy","đại sứ quán"),
+        bi("tv186","consulate","lãnh sự quán"),
+        bi("tv187","first aid","sơ cứu"),
+        bi("tv188","emergency exit","lối thoát hiểm"),
+        bi("tv189","lost passport","mất hộ chiếu"),
+        bi("tv190","I'm lost","tôi bị lạc"),
+        bi("tv191","where can I find","tôi có thể tìm ... ở đâu?"),
+        bi("tv192","I have a reservation","tôi có đặt chỗ trước"),
+        bi("tv193","do you have wifi","ở đây có wifi không?"),
+        bi("tv194","the bill please","cho tôi hóa đơn"),
+        bi("tv195","is service included","đã bao gồm phí dịch vụ chưa?"),
+        bi("tv196","can I pay by card","tôi có thể thanh toán bằng thẻ không?"),
+        bi("tv197","is this seat taken","chỗ này có ai ngồi chưa?"),
+        bi("tv198","what do you recommend","bạn gợi ý gì cho tôi?"),
+        bi("tv199","how do I get to","tôi đến ... bằng cách nào?"),
+        bi("tv200","itinerary","lịch trình chuyến đi")
+      ]
+    },
+    {
+      id: "builtin-3000",
+      name: "📚 3000 từ vựng cơ bản",
+      builtin: true,
+      items: [
+        bi("vk001","ability","khả năng"),
+        bi("vk002","absence","sự vắng mặt"),
+        bi("vk003","accept (v)","chấp nhận"),
+        bi("vk004","accident","tai nạn"),
+        bi("vk005","account","tài khoản / tài khoản ngân hàng"),
+        bi("vk006","achieve (v)","đạt được"),
+        bi("vk007","action","hành động"),
+        bi("vk008","actually","thực ra / thực sự"),
+        bi("vk009","address (n)","địa chỉ"),
+        bi("vk010","admire (v)","ngưỡng mộ"),
+        bi("vk011","advantage","lợi thế"),
+        bi("vk012","advice","lời khuyên"),
+        bi("vk013","afraid (adj)","sợ hãi"),
+        bi("vk014","agree (v)","đồng ý"),
+        bi("vk015","allow (v)","cho phép"),
+        bi("vk016","almost","hầu như / gần như"),
+        bi("vk017","alone (adj)","một mình"),
+        bi("vk018","although","mặc dù"),
+        bi("vk019","amount","số lượng / số tiền"),
+        bi("vk020","angry (adj)","tức giận"),
+        bi("vk021","announce (v)","thông báo"),
+        bi("vk022","anxiety","lo lắng / sự lo âu"),
+        bi("vk023","apply (v)","nộp đơn / áp dụng"),
+        bi("vk024","appreciate (v)","trân trọng / đánh giá cao"),
+        bi("vk025","approach (v)","tiếp cận / đến gần"),
+        bi("vk026","argue (v)","tranh luận / cãi nhau"),
+        bi("vk027","arrange (v)","sắp xếp"),
+        bi("vk028","avoid (v)","tránh"),
+        bi("vk029","aware (adj)","nhận thức được / biết"),
+        bi("vk030","background","nền tảng / bối cảnh"),
+        bi("vk031","behavior","hành vi"),
+        bi("vk032","believe (v)","tin tưởng / cho rằng"),
+        bi("vk033","benefit (n)","lợi ích"),
+        bi("vk034","borrow (v)","mượn"),
+        bi("vk035","break (v)","vỡ / phá vỡ"),
+        bi("vk036","bright (adj)","sáng / thông minh"),
+        bi("vk037","build (v)","xây dựng"),
+        bi("vk038","busy (adj)","bận rộn"),
+        bi("vk039","calm (adj)","bình tĩnh"),
+        bi("vk040","career","sự nghiệp"),
+        bi("vk041","careful (adj)","cẩn thận"),
+        bi("vk042","cause (n)","nguyên nhân"),
+        bi("vk043","challenge (n)","thách thức"),
+        bi("vk044","chance","cơ hội / khả năng"),
+        bi("vk045","change (v)","thay đổi"),
+        bi("vk046","choose (v)","chọn"),
+        bi("vk047","clear (adj)","rõ ràng"),
+        bi("vk048","collect (v)","thu thập / sưu tầm"),
+        bi("vk049","comfortable (adj)","thoải mái"),
+        bi("vk050","communicate (v)","giao tiếp"),
+        bi("vk051","compare (v)","so sánh"),
+        bi("vk052","complain (v)","phàn nàn"),
+        bi("vk053","complete (v)","hoàn thành"),
+        bi("vk054","confuse (v)","làm bối rối"),
+        bi("vk055","connect (v)","kết nối"),
+        bi("vk056","consider (v)","xem xét / cân nhắc"),
+        bi("vk057","continue (v)","tiếp tục"),
+        bi("vk058","control (v)","kiểm soát"),
+        bi("vk059","convenient (adj)","tiện lợi"),
+        bi("vk060","correct (adj)","đúng / chính xác"),
+        bi("vk061","create (v)","tạo ra"),
+        bi("vk062","creative (adj)","sáng tạo"),
+        bi("vk063","culture","văn hóa"),
+        bi("vk064","damage (v)","gây hại / làm hỏng"),
+        bi("vk065","dangerous (adj)","nguy hiểm"),
+        bi("vk066","deal with (v)","giải quyết / đối phó"),
+        bi("vk067","decide (v)","quyết định"),
+        bi("vk068","describe (v)","miêu tả"),
+        bi("vk069","destroy (v)","phá hủy"),
+        bi("vk070","develop (v)","phát triển"),
+        bi("vk071","different (adj)","khác nhau"),
+        bi("vk072","difficult (adj)","khó khăn"),
+        bi("vk073","disappear (v)","biến mất"),
+        bi("vk074","discover (v)","khám phá"),
+        bi("vk075","discuss (v)","thảo luận"),
+        bi("vk076","distance","khoảng cách"),
+        bi("vk077","doubt (n)","sự nghi ngờ"),
+        bi("vk078","dream (n)","giấc mơ / ước mơ"),
+        bi("vk079","earn (v)","kiếm được"),
+        bi("vk080","easy (adj)","dễ dàng"),
+        bi("vk081","effect","hiệu quả / tác động"),
+        bi("vk082","effort","nỗ lực / cố gắng"),
+        bi("vk083","embarrassed (adj)","xấu hổ / bối rối"),
+        bi("vk084","encourage (v)","khuyến khích"),
+        bi("vk085","environment","môi trường"),
+        bi("vk086","equipment","thiết bị / dụng cụ"),
+        bi("vk087","especially","đặc biệt là"),
+        bi("vk088","event","sự kiện"),
+        bi("vk089","exact (adj)","chính xác"),
+        bi("vk090","example","ví dụ"),
+        bi("vk091","expect (v)","mong đợi / kỳ vọng"),
+        bi("vk092","experience (n)","kinh nghiệm / trải nghiệm"),
+        bi("vk093","explain (v)","giải thích"),
+        bi("vk094","fail (v)","thất bại"),
+        bi("vk095","familiar (adj)","quen thuộc"),
+        bi("vk096","famous (adj)","nổi tiếng"),
+        bi("vk097","finally","cuối cùng"),
+        bi("vk098","find out (v)","tìm hiểu / phát hiện"),
+        bi("vk099","focus (v)","tập trung"),
+        bi("vk100","follow (v)","theo dõi / làm theo"),
+        bi("vk101","forget (v)","quên"),
+        bi("vk102","freedom","tự do"),
+        bi("vk103","friendly (adj)","thân thiện"),
+        bi("vk104","funny (adj)","buồn cười / hài hước"),
+        bi("vk105","goal","mục tiêu"),
+        bi("vk106","grateful (adj)","biết ơn"),
+        bi("vk107","grow (v)","phát triển / lớn lên"),
+        bi("vk108","guess (v)","đoán"),
+        bi("vk109","habit","thói quen"),
+        bi("vk110","happen (v)","xảy ra"),
+        bi("vk111","health","sức khỏe"),
+        bi("vk112","helpful (adj)","hữu ích"),
+        bi("vk113","honest (adj)","thành thật / trung thực"),
+        bi("vk114","however","tuy nhiên"),
+        bi("vk115","huge (adj)","khổng lồ / rất lớn"),
+        bi("vk116","imagine (v)","tưởng tượng"),
+        bi("vk117","improve (v)","cải thiện"),
+        bi("vk118","include (v)","bao gồm"),
+        bi("vk119","increase (v)","tăng lên"),
+        bi("vk120","information","thông tin"),
+        bi("vk121","instead","thay vào đó"),
+        bi("vk122","interest (n)","sự quan tâm / lãi suất"),
+        bi("vk123","introduce (v)","giới thiệu"),
+        bi("vk124","involve (v)","liên quan đến"),
+        bi("vk125","issue","vấn đề"),
+        bi("vk126","jealous (adj)","ghen tị / ghen tuông"),
+        bi("vk127","journey","hành trình"),
+        bi("vk128","keep (v)","giữ / tiếp tục"),
+        bi("vk129","knowledge","kiến thức"),
+        bi("vk130","lazy (adj)","lười biếng"),
+        bi("vk131","lead (v)","dẫn dắt / lãnh đạo"),
+        bi("vk132","learn (v)","học"),
+        bi("vk133","lend (v)","cho mượn"),
+        bi("vk134","lonely (adj)","cô đơn"),
+        bi("vk135","lucky (adj)","may mắn"),
+        bi("vk136","manage (v)","quản lý / xoay sở"),
+        bi("vk137","matter (v)","quan trọng"),
+        bi("vk138","mean (v)","có nghĩa là"),
+        bi("vk139","mention (v)","đề cập"),
+        bi("vk140","miss (v)","nhớ / bỏ lỡ"),
+        bi("vk141","mistake","lỗi / sai lầm"),
+        bi("vk142","natural (adj)","tự nhiên"),
+        bi("vk143","necessary (adj)","cần thiết"),
+        bi("vk144","nervous (adj)","lo lắng / hồi hộp"),
+        bi("vk145","notice (v)","chú ý / nhận ra"),
+        bi("vk146","offer (v)","đề nghị / cung cấp"),
+        bi("vk147","opinion","ý kiến"),
+        bi("vk148","opportunity","cơ hội"),
+        bi("vk149","organize (v)","tổ chức / sắp xếp"),
+        bi("vk150","overcome (v)","vượt qua"),
+        bi("vk151","patient (adj)","kiên nhẫn"),
+        bi("vk152","perform (v)","thực hiện / biểu diễn"),
+        bi("vk153","prepare (v)","chuẩn bị"),
+        bi("vk154","prevent (v)","ngăn chặn"),
+        bi("vk155","probably","có lẽ / chắc là"),
+        bi("vk156","problem","vấn đề / bài toán"),
+        bi("vk157","progress (n)","tiến bộ / tiến độ"),
+        bi("vk158","protect (v)","bảo vệ"),
+        bi("vk159","provide (v)","cung cấp"),
+        bi("vk160","purpose","mục đích"),
+        bi("vk161","reach (v)","đạt tới / vươn tới"),
+        bi("vk162","realize (v)","nhận ra / hiểu ra"),
+        bi("vk163","reason","lý do"),
+        bi("vk164","receive (v)","nhận được"),
+        bi("vk165","recognize (v)","nhận ra / công nhận"),
+        bi("vk166","recommend (v)","khuyến nghị / giới thiệu"),
+        bi("vk167","reduce (v)","giảm"),
+        bi("vk168","relationship","mối quan hệ"),
+        bi("vk169","remember (v)","nhớ"),
+        bi("vk170","repeat (v)","lặp lại"),
+        bi("vk171","replace (v)","thay thế"),
+        bi("vk172","require (v)","yêu cầu / cần"),
+        bi("vk173","respect (v)","tôn trọng"),
+        bi("vk174","result","kết quả"),
+        bi("vk175","serious (adj)","nghiêm túc / nghiêm trọng"),
+        bi("vk176","share (v)","chia sẻ"),
+        bi("vk177","similar (adj)","tương tự / giống nhau"),
+        bi("vk178","simple (adj)","đơn giản"),
+        bi("vk179","situation","tình huống"),
+        bi("vk180","skill","kỹ năng"),
+        bi("vk181","solve (v)","giải quyết"),
+        bi("vk182","spend (v)","tiêu / dành thời gian"),
+        bi("vk183","strange (adj)","kỳ lạ / xa lạ"),
+        bi("vk184","study (v)","học tập / nghiên cứu"),
+        bi("vk185","succeed (v)","thành công"),
+        bi("vk186","suggest (v)","gợi ý / đề xuất"),
+        bi("vk187","support (v)","hỗ trợ / ủng hộ"),
+        bi("vk188","surprise (n)","sự bất ngờ"),
+        bi("vk189","therefore","vì vậy / do đó"),
+        bi("vk190","tired (adj)","mệt mỏi"),
+        bi("vk191","travel (v)","đi du lịch / di chuyển"),
+        bi("vk192","trust (v)","tin tưởng"),
+        bi("vk193","try (v)","cố gắng / thử"),
+        bi("vk194","understand (v)","hiểu"),
+        bi("vk195","upset (adj)","buồn / khó chịu"),
+        bi("vk196","useful (adj)","hữu ích"),
+        bi("vk197","various (adj)","khác nhau / đa dạng"),
+        bi("vk198","waste (v)","lãng phí"),
+        bi("vk199","wonder (v)","tự hỏi / thắc mắc"),
+        bi("vk200","worry (v)","lo lắng")
+      ]
+    },
+  ];
+
   let soundContext = null;
   let soundBuffer = null;
   let soundCues = null;
@@ -22,6 +855,9 @@
     query: "",
     form: { term: "", definition: "" },
     editingId: null,
+    inlineEditId: null,
+    inlineEditTerm: "",
+    inlineEditDef: "",
     bulkText: "",
     importSummary: null,
     shareLink: "",
@@ -34,7 +870,7 @@
     quizDirection: "term-to-def",
     quizMode: "type",
     choiceOptions: [],
-    ttsLang: localStorage.getItem(TTS_LANG_KEY) || "fr-FR",
+    ttsLang: localStorage.getItem(TTS_LANG_KEY) || "en-US",
     view: sharedQuiz ? "quiz" : "study",
     quizItems: sharedQuiz ? shuffle(sharedQuiz.items) : [],
     activeQuizName: sharedQuiz ? sharedQuiz.name : "",
@@ -554,7 +1390,7 @@
     source.start(0, cue.start, Math.max(0.08, cue.end - cue.start));
   }
 
-  // Maps BCP-47 lang codes → ResponsiveVoice voice names
+  // Maps BCP-47 lang codes → ResponsiveVoice voice names (fallback only)
   const RV_VOICES = {
     "fr-FR": "French Female",
     "en-US": "US English Female",
@@ -572,29 +1408,55 @@
     "vi-VN": "Vietnamese Female",
   };
 
-  function speak(text, lang) {
+  let voicesReady = null;
+  function loadVoices() {
+    if (voicesReady) return voicesReady;
+    voicesReady = new Promise((resolve) => {
+      const v = window.speechSynthesis.getVoices();
+      if (v.length) { resolve(v); return; }
+      let resolved = false;
+      window.speechSynthesis.addEventListener("voiceschanged", function onVoices() {
+        if (resolved) return;
+        resolved = true;
+        window.speechSynthesis.removeEventListener("voiceschanged", onVoices);
+        resolve(window.speechSynthesis.getVoices());
+      });
+      // Safety timeout in case voiceschanged never fires
+      setTimeout(() => { if (!resolved) { resolved = true; resolve(window.speechSynthesis.getVoices()); } }, 2000);
+    });
+    return voicesReady;
+  }
+
+  async function speak(text, lang) {
+    // Strip parenthetical annotations like (adj), (v), (informal) before speaking
+    text = text.replace(/\(.*?\)/g, "").replace(/\s+/g, " ").trim();
+    if (!text) return;
     const targetLang = lang || state.ttsLang;
-    if (window.responsiveVoice) {
-      const voice = RV_VOICES[targetLang] || "US English Female";
-      responsiveVoice.speak(text, voice, { rate: 0.9 });
-      return;
-    }
-    // Fallback to Web Speech API if ResponsiveVoice didn't load
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    setTimeout(() => {
-      const utterance = new SpeechSynthesisUtterance(text);
+
+    // Prefer Web Speech API — native voices (e.g. macOS French voice) sound better
+    if (window.speechSynthesis) {
+      const voices = await loadVoices();
       const tl = targetLang.toLowerCase();
-      const voices = window.speechSynthesis.getVoices();
       const voice =
         voices.find(v => v.lang.toLowerCase() === tl) ||
-        voices.find(v => v.lang.toLowerCase().startsWith(tl.split("-")[0])) ||
-        voices[0];
-      if (voice) utterance.voice = voice;
-      utterance.lang = targetLang;
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }, 150);
+        voices.find(v => v.lang.toLowerCase().startsWith(tl.split("-")[0]));
+      if (voice) {
+        window.speechSynthesis.cancel();
+        setTimeout(() => {
+          const u = new SpeechSynthesisUtterance(text);
+          u.voice = voice;
+          u.lang = targetLang;
+          u.rate = 0.9;
+          window.speechSynthesis.speak(u);
+        }, 50);
+        return;
+      }
+    }
+
+    // Fallback: ResponsiveVoice (covers devices with no native voices installed)
+    if (window.responsiveVoice) {
+      responsiveVoice.speak(text, RV_VOICES[targetLang] || "US English Female", { rate: 0.9 });
+    }
   }
 
   function submitVocabulary(event) {
@@ -637,11 +1499,14 @@
   }
 
   function generateChoiceOptions(question) {
+    // Choices must be the ANSWER field, opposite of what's shown as the question prompt.
+    // "term-to-def" (Nghĩa→Từ): prompt=definition, so choices=term
+    // "def-to-term" (Từ→Nghĩa): prompt=term, so choices=definition
     const isTermToDef = state.quizDirection !== "def-to-term";
-    const correct = isTermToDef ? question.definition : question.term;
+    const correct = isTermToDef ? question.term : question.definition;
     const pool = state.vocabulary
       .filter(item => item.id !== question.id)
-      .map(item => isTermToDef ? item.definition : item.term);
+      .map(item => isTermToDef ? item.term : item.definition);
     const distractors = shuffle(pool).slice(0, 3);
     return shuffle([correct, ...distractors]);
   }
@@ -696,7 +1561,8 @@
   }
 
   function startSavedQuiz(id) {
-    const quiz = state.savedQuizzes.find((item) => item.id === id);
+    const quiz = state.savedQuizzes.find((item) => item.id === id)
+      || BUILTIN_QUIZZES.find((item) => item.id === id);
     if (!quiz) return;
     state.quizName = quiz.name;
     startQuiz(quiz.items, quiz.items.length, quiz.name);
@@ -800,7 +1666,7 @@
 
         <section class="card stack">
           <h2>Nhập hàng loạt</h2>
-          <textarea rows="8" data-field="bulk" placeholder="bonjour = xin chào&#10;merci: cảm ơn&#10;apprendre -> học&#10;manger | ăn">${escapeHtml(state.bulkText)}</textarea>
+          <textarea rows="8" data-field="bulk" placeholder="apple = quả táo&#10;happy: vui vẻ&#10;run -> chạy&#10;book | sách">${escapeHtml(state.bulkText)}</textarea>
           <button class="primary-button" type="button" data-action="import">Nhập</button>
           ${state.importSummary ? `<p class="summary" aria-live="polite">Imported: ${state.importSummary.imported} · Skipped: ${state.importSummary.skipped}</p>` : ""}
           <button class="secondary-button" type="button" data-action="clear-vocabulary" ${state.vocabulary.length === 0 ? "disabled" : ""}>Xóa danh sách hiện tại</button>
@@ -836,11 +1702,22 @@
               <tr><th>Từ cần học</th><th>Nghĩa</th><th>Thao tác</th></tr>
             </thead>
             <tbody>
-              ${rows.map((item) => `
+              ${rows.map((item) => {
+                if (item.id === state.inlineEditId) {
+                  return `
+                <tr class="inline-edit-row">
+                  <td><input class="inline-input" data-field="inline-term" value="${escapeHtml(state.inlineEditTerm)}" /></td>
+                  <td><input class="inline-input" data-field="inline-def" value="${escapeHtml(state.inlineEditDef)}" /></td>
+                  <td class="actions">
+                    <button class="text-button" type="button" data-action="inline-save" data-id="${item.id}">Lưu</button>
+                    <button class="text-button" type="button" data-action="inline-cancel">Hủy</button>
+                  </td>
+                </tr>`;
+                }
+                return `
                 <tr>
                   <td>
                     ${escapeHtml(item.term)}
-                    ${(() => { const d = perf[perfKey(item)]; if (!d || d.attempts === 0) return ''; const acc = d.correct/d.attempts; const lvl = acc >= 0.8 ? 'strong' : acc >= 0.5 ? 'weak' : 'struggling'; return `<span class="perf-dot perf-${lvl}" title="${d.correct}/${d.attempts} correct"></span>`; })()}
                     <button class="speak-btn" type="button" data-action="speak" data-text="${escapeHtml(item.term)}" data-lang="${escapeHtml(state.ttsLang)}" title="Nghe phát âm">🔊</button>
                   </td>
                   <td>${escapeHtml(item.definition)}</td>
@@ -848,8 +1725,8 @@
                     <button class="text-button" type="button" data-action="edit" data-id="${item.id}">Sửa</button>
                     <button class="text-button danger" type="button" data-action="delete" data-id="${item.id}">Xóa</button>
                   </td>
-                </tr>
-              `).join("")}
+                </tr>`;
+              }).join("")}
             </tbody>
           </table>
         </div>
@@ -884,19 +1761,8 @@
           <span>Ngôn ngữ đang học</span>
           <select data-field="tts-lang">
             ${[
-              ["fr-FR", "🇫🇷 Tiếng Pháp"],
               ["en-US", "🇺🇸 Tiếng Anh (Mỹ)"],
               ["en-GB", "🇬🇧 Tiếng Anh (Anh)"],
-              ["ja-JP", "🇯🇵 Tiếng Nhật"],
-              ["ko-KR", "🇰🇷 Tiếng Hàn"],
-              ["zh-CN", "🇨🇳 Tiếng Trung (Giản thể)"],
-              ["zh-TW", "🇹🇼 Tiếng Trung (Phồn thể)"],
-              ["es-ES", "🇪🇸 Tiếng Tây Ban Nha"],
-              ["de-DE", "🇩🇪 Tiếng Đức"],
-              ["it-IT", "🇮🇹 Tiếng Ý"],
-              ["ru-RU", "🇷🇺 Tiếng Nga"],
-              ["th-TH", "🇹🇭 Tiếng Thái"],
-              ["pt-BR", "🇧🇷 Tiếng Bồ Đào Nha"],
             ].map(([code, label]) => `<option value="${code}" ${state.ttsLang === code ? "selected" : ""}>${label}</option>`).join("")}
           </select>
         </label>
@@ -913,25 +1779,33 @@
           <h2>Bài kiểm tra đã lưu</h2>
           <span class="summary">${state.savedQuizzes.length} đã lưu</span>
         </div>
-        ${state.savedQuizzes.length === 0 ? `
-          <p class="summary">Chưa có bài nào được lưu. Đặt tên và lưu bài, hoặc lưu từ màn hình kết quả.</p>
-        ` : `
-          <div class="saved-quiz-list">
-            ${state.savedQuizzes.map((quiz) => `
-              <article class="saved-quiz-item">
-                <div>
-                  <h3>${escapeHtml(quiz.name)}</h3>
-                  <p class="summary">${quiz.items.length} câu</p>
-                </div>
-                <div class="button-row">
-                  <button class="primary-button" type="button" data-action="start-saved-quiz" data-id="${quiz.id}">Bắt đầu</button>
-                  <button class="secondary-button" type="button" data-action="share-saved-quiz" data-id="${quiz.id}">Chia sẻ</button>
-                  <button class="text-button danger" type="button" data-action="delete-saved-quiz" data-id="${quiz.id}">Xóa</button>
-                </div>
-              </article>
-            `).join("")}
-          </div>
-        `}
+        <div class="saved-quiz-list">
+          ${BUILTIN_QUIZZES.map((quiz) => `
+            <article class="saved-quiz-item builtin-quiz-item">
+              <div>
+                <h3>${escapeHtml(quiz.name)}</h3>
+                <p class="summary">${quiz.items.length} từ · Có sẵn</p>
+              </div>
+              <div class="button-row">
+                <button class="primary-button" type="button" data-action="start-saved-quiz" data-id="${quiz.id}">Bắt đầu</button>
+              </div>
+            </article>
+          `).join("")}
+          ${state.savedQuizzes.map((quiz) => `
+            <article class="saved-quiz-item">
+              <div>
+                <h3>${escapeHtml(quiz.name)}</h3>
+                <p class="summary">${quiz.items.length} câu</p>
+              </div>
+              <div class="button-row">
+                <button class="primary-button" type="button" data-action="start-saved-quiz" data-id="${quiz.id}">Bắt đầu</button>
+                <button class="secondary-button" type="button" data-action="share-saved-quiz" data-id="${quiz.id}">Chia sẻ</button>
+                <button class="text-button danger" type="button" data-action="delete-saved-quiz" data-id="${quiz.id}">Xóa</button>
+              </div>
+            </article>
+          `).join("")}
+          ${state.savedQuizzes.length === 0 ? `<p class="summary">Chưa có bài nào được lưu. Đặt tên và lưu bài, hoặc lưu từ màn hình kết quả.</p>` : ""}
+        </div>
         ${state.savedQuizLink ? `
           <label>
             <span>Link bài kiểm tra</span>
@@ -1007,7 +1881,6 @@
               <p>Đáp án đúng: <strong>${escapeHtml(fullAnswer)}</strong></p>
               ${isTermToDef ? `<button class="speak-btn" type="button" data-action="speak" data-text="${escapeHtml(currentQuestion.term)}" data-lang="${escapeHtml(state.ttsLang)}" title="Nghe phát âm">🔊</button>` : ""}
             </div>
-            <p class="summary">Nhấn Enter để tiếp tục</p>
             <button class="primary-button large-button" type="button" data-action="continue">Tiếp tục</button>
           </section>
         ` : ""}
@@ -1116,6 +1989,8 @@
         if (field === "custom-size") state.customSize = value;
         if (field === "answer") state.answer = value;
         if (field === "quiz-name") state.quizName = value;
+        if (field === "inline-term") state.inlineEditTerm = value;
+        if (field === "inline-def") state.inlineEditDef = value;
         if (field === "tts-lang") {
           state.ttsLang = value;
           try { localStorage.setItem(TTS_LANG_KEY, value); } catch {}
@@ -1156,7 +2031,21 @@
         if (action === "import") importVocabulary();
         if (action === "edit") {
           const item = state.vocabulary.find((entry) => entry.id === id);
-          if (item) setState({ editingId: item.id, form: { term: item.term, definition: item.definition } });
+          if (item) setState({ inlineEditId: item.id, inlineEditTerm: item.term, inlineEditDef: item.definition });
+        }
+        if (action === "inline-save") {
+          const term = state.inlineEditTerm.trim();
+          const def = state.inlineEditDef.trim();
+          if (term && def) {
+            state.vocabulary = state.vocabulary.map((entry) =>
+              entry.id === id ? { ...entry, term, definition: def } : entry
+            );
+            saveVocabulary();
+          }
+          setState({ inlineEditId: null, inlineEditTerm: "", inlineEditDef: "" });
+        }
+        if (action === "inline-cancel") {
+          setState({ inlineEditId: null, inlineEditTerm: "", inlineEditDef: "" });
         }
         if (action === "delete") {
           state.vocabulary = state.vocabulary.filter((entry) => entry.id !== id);
@@ -1195,17 +2084,6 @@
     });
   }
 
-  document.addEventListener("keydown", (event) => {
-    if (
-      event.key === "Enter" &&
-      state.view === "quiz" &&
-      state.feedback !== null &&
-      !event.target.matches("[data-field='answer']")
-    ) {
-      event.preventDefault();
-      nextQuestion();
-    }
-  });
 
   render();
 })();
