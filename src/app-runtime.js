@@ -921,12 +921,59 @@
     }
   }
 
+  // ── Cloud sync ───────────────────────────────────────────
+  const isLocal = ["localhost", "127.0.0.1", ""].includes(location.hostname);
+  let _syncing = false;      // prevents push loop during pull
+  let _syncTimer = null;
+
+  function pushToCloud() {
+    if (_syncing || isLocal) return;
+    clearTimeout(_syncTimer);
+    _syncTimer = setTimeout(async () => {
+      const token = localStorage.getItem("VQ_SESSION_TOKEN");
+      if (!token) return;
+      try {
+        await fetch("/api/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-session-token": token },
+          body: JSON.stringify({ vocabulary: state.vocabulary, savedQuizzes: state.savedQuizzes }),
+        });
+      } catch {}
+    }, 800);
+  }
+
+  async function syncFromCloud() {
+    if (isLocal) return;
+    const token = localStorage.getItem("VQ_SESSION_TOKEN");
+    if (!token) return;
+    try {
+      const res = await fetch("/api/sync", { headers: { "x-session-token": token } });
+      if (!res.ok) return;
+      const { vocabulary, savedQuizzes } = await res.json();
+      _syncing = true;
+      if (Array.isArray(vocabulary) && vocabulary.length > 0) {
+        state.vocabulary = vocabulary.map(migrateLegacyItem);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.vocabulary));
+      }
+      if (Array.isArray(savedQuizzes) && savedQuizzes.length > 0) {
+        state.savedQuizzes = savedQuizzes;
+        localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(state.savedQuizzes));
+      }
+      _syncing = false;
+      render();
+    } catch {
+      _syncing = false;
+    }
+  }
+  // ─────────────────────────────────────────────────────────
+
   function saveVocabulary() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.vocabulary));
     } catch {
       console.warn("Không thể lưu từ vựng: bộ nhớ có thể đã đầy.");
     }
+    pushToCloud();
   }
 
   function saveSavedQuizzes() {
@@ -935,6 +982,7 @@
     } catch {
       console.warn("Không thể lưu bài kiểm tra: bộ nhớ có thể đã đầy.");
     }
+    pushToCloud();
   }
 
   function perfKey(item) {
@@ -2086,4 +2134,5 @@
 
 
   render();
+  syncFromCloud();
 })();

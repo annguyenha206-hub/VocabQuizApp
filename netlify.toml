@@ -25,3 +25,8 @@
   from = "/api/admin/toggle-code"
   to = "/.netlify/functions/admin-toggle-code"
   status = 200
+
+[[redirects]]
+  from = "/api/sync"
+  to = "/.netlify/functions/sync"
+  status = 200
